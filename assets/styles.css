@@ -1,0 +1,43 @@
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+.container {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+}
+
+.btn {
+  margin-top: 10px;
+  padding: 4px 10px;
+  color: #3c763d;
+  background-color: #dff0d8;
+  border: 1px solid #3c763d;
+  border-radius: 4px;
+  outline: none;
+}
+
+.btn:focus {
+  border: 2px solid #3c763d;
+}
+
+.alert {
+  padding: 15px;
+  margin-top: 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-info {
+  border-color: #bce8f1;
+  color: #31708f;
+  background-color: #d9edf7;
+}
+
+.alert-error {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
