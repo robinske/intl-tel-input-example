@@ -14,15 +14,16 @@
     <div class="container">
       <h1>International telephone input</h1>
       <p>
-        This example shows how to process and parse international phone numbers
-        and detect invalid phone numbers with the
+        This example shows how to process and parse international phone numbers with the
+        <a href="https://github.com/jackocnr/intl-tel-input"><code>intl-tel-input</code></a>
+        library and detect invalid phone numbers with the
         <a href="https://twilio.com/docs/lookup/api">Twilio Lookup API</a>.
       </p>
       <div>
         <form id="login" onsubmit="process(event)">
           <div class="phone-input">
             <p>Enter your phone number:</p>
-            <input type="tel" id="phone_number" class="form-control" />
+            <input type="tel" id="phone" class="form-control" />
           </div>
           <div>
             <input type="submit" class="btn" value="Verify" />
@@ -35,7 +36,7 @@
   <script>
     // Handle international prefixes, format phone input field
     // Uses intl-tel-input library
-    const phoneInputField = document.querySelector("#phone_number");
+    const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
       // https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
       preferredCountries: ["us", "co", "in", "de"],
@@ -55,7 +56,10 @@
 
       const phoneNumber = phoneInput.getNumber();
 
-      // Twilio functions do not accept multipart/form-data
+      // OPTION 1 - Twilio Lookup API
+      // Pros: Free API call, updated data
+      // Pros: The Lookup API can return line type and carrier info too: https://www.twilio.com/docs/lookup/api
+      // Cons: Network request
       const data = new URLSearchParams();
       data.append("phone", phoneNumber);
 
@@ -74,10 +78,20 @@
         }
       })
       .catch(err => {
-        console.log(err);
         error.style.display = "";
-        error.innerHTML = `Something went wrong.`
+        error.innerHTML = `Something went wrong: ${err}`
       });
+
+      // OPTION 2 - intl-tel-input validity check
+      // Pros: No additional API call
+      // Cons: Requires updating the library for updates to phone number validity
+      // if (phoneInput.isValidNumber()) {
+      //   info.style.display = "";
+      //   info.innerHTML = `Phone number in E.164 format: <strong>${phoneNumber}</strong>`
+      // } else {
+      //   error.style.display = "";
+      //   error.innerHTML = `Invalid phone number.`
+      // }
     }
   </script>
 </html>
