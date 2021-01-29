@@ -28,7 +28,8 @@
             <input type="submit" class="btn" value="Verify" />
           </div>
         </form>
-      <div class="alert-info" style="display: none;"></div>
+      <div class="alert alert-info" style="display: none;"></div>
+      <div class="alert alert-error" style="display: none;"></div>
     </div>
   </body>
   <script>
@@ -43,13 +44,40 @@
         "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/utils.js",
     });
 
+    const info = document.querySelector(".alert-info")
+    const error = document.querySelector(".alert-error")
+
     function process(event) {
       event.preventDefault();
+
+      info.style.display = "none";
+      error.style.display = "none";
+
       const phoneNumber = phoneInput.getNumber();
 
-      const info = document.querySelector(".alert-info")
-      info.style.display = "";
-      info.innerHTML = `Phone number in E.164 format: <strong>${phoneNumber}</strong>`
+      // Twilio functions do not accept multipart/form-data
+      const data = new URLSearchParams();
+      data.append("phone", phoneNumber);
+
+      fetch("./lookup", {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.json())
+      .then(json => {
+        if (json.success) {
+          info.style.display = "";
+          info.innerHTML = `Phone number in E.164 format: <strong>${phoneNumber}</strong>`
+        } else {
+          error.style.display = "";
+          error.innerHTML = `Invalid phone number.`
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        error.style.display = "";
+        error.innerHTML = `Something went wrong.`
+      });
     }
   </script>
 </html>
