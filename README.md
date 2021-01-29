@@ -1,16 +1,10 @@
-# Twilio Verify
+# International telephone input validation
 
-These function show you how to send and check verification tokens for [Twilio Verify](https://www.twilio.com/docs/verify/api). More details about how to work with Verify and Twilio functions can be found in [this blog post](https://www.twilio.com/blog/serverless-phone-verification).
-
-![phone-verification-gif](https://github.com/robinske/serverless-phone-verification/blob/master/phone-verification.gif?raw=true)
+This project will show you one way to validate phone number inputs with the `intl-tel-input` library and Twilio's [Lookup API](https://www.twilio.com/docs/lookup/api). For a production use case we recommend adding [phone verification](https://github.com/twilio-labs/function-templates/tree/main/verify), which is a best practice for collecting phone numbers from your users in order to make sure they have control of the number.
 
 ## How to use the template
 
 The best way to use the Function templates is through the Twilio CLI as described below. If you'd like to use the template without the Twilio CLI, [check out our usage docs](../docs/USING_FUNCTIONS.md).
-
-## Pre-requisites
-
-- [Create a Verify Service](https://www.twilio.com/console/verify/services)
 
 ### Environment variables
 
@@ -22,24 +16,15 @@ In your `.env` file, set the following values:
 | :------------------- | :---------------------------------------------------------------- | :------- |
 | `ACCOUNT_SID`        | Find in the [console](https://www.twilio.com/console)             | Yes      |
 | `AUTH_TOKEN`         | Find in the [console](https://www.twilio.com/console)             | Yes      |
-| `VERIFY_SERVICE_SID` | Create one [here](https://www.twilio.com/console/verify/services) | Yes      |
 
 ### Function Parameters
 
-`start-verify.js` expects the following parameters:
+`lookup.js` expects the following parameters:
 
 | Parameter      | Description                                 | Required |
 | :------------- | :------------------------------------------ | :------- |
-| `to`           | Either an email or phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164) | Yes |
-| `channel`      | 'sms', 'call', or 'email'. Default is 'sms' | No |
-| `locale`       | Localization language. See [supported languages](https://www.twilio.com/docs/verify/supported-languages). Default is 'en' | No |
+| `phone`        | Phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164) | Yes |
 
-`check-verify.js` expects the following parameters:
-
-| Parameter           | Description                | Required |
-| :------------------ | :------------------------- | :------- |
-| `to`                | Either an email or phone number in [E.164 format](https://www.twilio.com/docs/glossary/what-e164) | Yes |
-| `verification_code` | Collected from user input  | Yes      |
 
 ## Create a new project with the template
 
@@ -53,7 +38,7 @@ twilio plugins:install @twilio-labs/plugin-serverless
 3. Initiate a new project
 
 ```
-twilio serverless:init verify-sample --template=verify && cd verify-sample
+twilio serverless:init phone-input-sample --template=telinput && cd phone-input-sample
 ```
 
 4. Add your environment variables to `.env`:
@@ -69,10 +54,6 @@ npm start
 5. Open the web page at https://localhost:3000/index.html and enter your phone number to test
 
 ℹ️ Check the developer console and terminal for any errors, make sure you've set your environment variables.
-
-6. [optional] Configure email verification
-
-[Follow the instructions in the docs](https://www.twilio.com/docs/verify/email) to set up email verification.
 
 ## Deploying
 
