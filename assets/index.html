@@ -30,23 +30,36 @@
     </div>
   </body>
   <script>
+    function getIp(callback) {
+      fetch('https://ipinfo.io/json?token=<your token here>', { headers: { 'Accept': 'application/json' }})
+        .then((resp) => resp.json())
+        .catch(() => {
+          return {
+            country: 'us',
+          };
+        })
+        .then((resp) => callback(resp.country));
+    }
+
     // Handle international prefixes, format phone input field
     // Uses intl-tel-input plugin
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
       // https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
       preferredCountries: ["us", "co", "in", "de"],
+      initialCountry: "auto",
+      geoIpLookup: getIp,
       utilsScript:
         "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
-
-    const phoneNumber = phoneInput.getNumber();
 
     const info = document.querySelector(".alert-info");
     const error = document.querySelector(".alert-error");
 
     function process(event) {
       event.preventDefault();
+
+      const phoneNumber = phoneInput.getNumber();
 
       info.style.display = "none";
       error.style.display = "none";
