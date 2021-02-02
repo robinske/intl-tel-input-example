@@ -21,7 +21,7 @@
         Learn more in <a href="https://www.twilio.com/blog/international-phone-number-input-html-javascript">this blog post.</a>
       </p>
       <div>
-        <form id="login" onsubmit="process(event)">
+        <form id="login">
           <p>Enter your phone number:</p>
           <input id="phone" type="tel" name="phone">
           <input type="submit" class="btn" value="Verify" />
@@ -89,6 +89,9 @@
         //   error.innerHTML = `Invalid phone number.`
         // }
       }
+
+      const form = document.getElementById("lookup");
+      form.addEventListener("submit", process);
     </script>
   </body>
 </html>
