@@ -12,8 +12,15 @@
  *    "error": string      // not present if success is true
  *  }
  */
+function errorStr(errors) {
+  return errors
+    .map((err) => {
+      return err.replaceAll("_", " ").toLowerCase();
+    })
+    .join(", ");
+}
 
-exports.handler = function (context, event, callback) {
+exports.handler = async function (context, event, callback) {
   const response = new Twilio.Response();
   response.appendHeader("Content-Type", "application/json");
 
@@ -22,34 +29,42 @@ exports.handler = function (context, event, callback) {
   // response.appendHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   // response.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (event.phone === "") {
-    response.setBody({
-      success: false,
-      error: "Missing parameter; please provide a phone number.",
-    });
-    response.setStatusCode(400);
-    return callback(null, response);
-  }
+  try {
+    if (event.phone === "") {
+      response.setBody({
+        success: false,
+        error: "Missing parameter; please provide a phone number.",
+      });
+      response.setStatusCode(400);
+      return callback(null, response);
+    }
 
-  const client = context.getTwilioClient();
+    const client = context.getTwilioClient();
+    const lookup = await client.lookups.v2.phoneNumbers(event.phone).fetch();
 
-  client.lookups
-    .phoneNumbers(event.phone)
-    .fetch()
-    .then((resp) => {
+    if (lookup.valid) {
       response.setStatusCode(200);
       response.setBody({
         success: true,
       });
       callback(null, response);
-    })
-    .catch((error) => {
-      console.log(error);
-      response.setStatusCode(error.status);
+    } else {
+      response.setStatusCode(400);
       response.setBody({
         success: false,
-        error: error.message,
+        error: `Invalid phone number ${event.phone}: ${errorStr(
+          lookup.validationErrors
+        )}`,
       });
       callback(null, response);
+    }
+  } catch (error) {
+    console.error(error);
+    response.setStatusCode(error.status);
+    response.setBody({
+      success: false,
+      error: "Something went wrong.",
     });
+    callback(null, response);
+  }
 };
