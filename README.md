@@ -6,7 +6,7 @@ This project will show you one way to validate phone number inputs with the [`in
 
 Create a .env file and add your environment variables found in the [Twilio console](https://twilio.com/console)
 ```
-cp .env.example .ev
+cp .env.example .env
 ```
 
 Then install the dependencies and run with npm:
